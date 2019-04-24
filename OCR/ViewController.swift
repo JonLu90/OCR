@@ -7,14 +7,65 @@
 //
 
 import UIKit
+import TesseractOCR
 
 class ViewController: UIViewController {
 
+    let uploadButton: UIButton = {
+        let button = UIButton(frame: .zero)
+        button.backgroundColor = .gray
+        return button
+    }()
+    
+    let textView: UITextView = {
+        let textView = UITextView(frame: .zero)
+        textView.backgroundColor = .lightGray
+        textView.text = "nutrition information :"
+        return textView
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+
+        setupView()
+        config()
     }
 
 
+    private func setupView() {
+        let naviBarHeight = self.navigationController?.navigationBar.bounds.height ?? 0
+        let screenHeight = view.bounds.height - naviBarHeight
+        let screenWidth = view.bounds.width
+        view.backgroundColor = .white
+        
+        uploadButton.frame = CGRect(x: 0, y: screenHeight - 60, width: 120, height: 30)
+        uploadButton.center.x = view.center.x
+        uploadButton.setTitle("choose image", for: .normal)
+        view.addSubview(uploadButton)
+
+        textView.frame = CGRect(x: 0, y: naviBarHeight + 48, width: screenWidth - 16, height: screenHeight - 200)
+        textView.center.x = view.center.x
+        view.addSubview(textView)
+    }
+    
+    private func config() {
+        uploadButton.addTarget(self, action: #selector(presentImageLibrary(sender:)), for: .touchUpInside)
+    }
+    
+    @objc private func presentImageLibrary(sender: UIButton) {
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.sourceType = .photoLibrary
+        navigationController?.present(imagePicker, animated: true, completion: nil)
+    }
 }
 
+extension ViewController: UIImagePickerControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        navigationController?.dismiss(animated: true, completion: {
+            print("TODO")
+        })
+    }
+}
+
+extension ViewController: UINavigationControllerDelegate {}

@@ -32,6 +32,16 @@ class ViewController: UIViewController {
     }
 
 
+    private func performOCR(image: UIImage) {
+        if let tess = G8Tesseract(language: "eng") {
+            tess.engineMode = .tesseractCubeCombined
+            tess.pageSegmentationMode = .auto
+            tess.image = image.g8_blackAndWhite()
+            tess.recognize()
+            textView.text = tess.recognizedText
+        }
+    }
+    
     private func setupView() {
         let naviBarHeight = self.navigationController?.navigationBar.bounds.height ?? 0
         let screenHeight = view.bounds.height - naviBarHeight
@@ -62,9 +72,14 @@ class ViewController: UIViewController {
 
 extension ViewController: UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        navigationController?.dismiss(animated: true, completion: {
-            print("TODO")
-        })
+        if let selectedPhoto = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+            print("photo resolution : \(selectedPhoto.size)")
+            
+            
+            navigationController?.dismiss(animated: true, completion: {
+                self.performOCR(image: selectedPhoto)
+            })
+        } 
     }
 }
 

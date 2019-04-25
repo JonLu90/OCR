@@ -75,11 +75,12 @@ extension ViewController: UIImagePickerControllerDelegate {
         if let selectedPhoto = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             print("photo resolution : \(selectedPhoto.size)")
             
-            
+            textView.text = "Processing ..."
+
             navigationController?.dismiss(animated: true, completion: {
                 self.performOCR(image: selectedPhoto)
             })
-        } 
+        }
     }
 }
 
